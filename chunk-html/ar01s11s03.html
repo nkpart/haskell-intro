@@ -1,0 +1,17 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Really?</title><link href="style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.75.0" name="generator"><link rel="home" href="index.html" title="Advanced Programming Concepts using Haskell"><link rel="up" href="ar01s11.html" title="Mocking"><link rel="prev" href="ar01s11s02.html" title="Let's try it"><link rel="next" href="ar01s12.html" title="Custom Data Type"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Really?</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s11s02.html">Prev</a>&nbsp;</td><th align="center" width="60%">Mocking</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s12.html">Next</a></td></tr></table><hr></div><div class="sect2" title="Really?"><div class="titlepage"><div><div><h3 class="title"><a name="N1029D"></a>Really?</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            </p><pre class="programlisting">
+testMap :: (Bool -&gt; String) -&gt; (Int -&gt; Bool) -&gt; [Int] -&gt; Bool
+testMap f g x = map (f . g) x == map f (map g x)</pre><p>
+          </p></li><li class="listitem"><p>
+            <sup>[<a href="#ftn.N102AD" name="N102AD" class="footnote">1</a>]</sup>
+            </p><pre class="programlisting">
+Main&gt; ourCheck testMap
+OK, passed 500 tests.</pre><p>
+          </p></li></ul></div><p>
+    </p><div class="footnotes"><br><hr align="left" width="100"><div class="footnote"><p><sup>[<a href="#N102AD" name="ftn.N102AD" class="para">1</a>] </sup>
+                You will also need
+                <pre class="programlisting">
+instance Show (a -&gt; b) where
+  show _ = "&lt;&lt;function&gt;&gt;"</pre>
+              </p></div></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s11s02.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="ar01s11.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="ar01s12.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Let's try it&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Custom Data Type</td></tr></table></div></body></html>

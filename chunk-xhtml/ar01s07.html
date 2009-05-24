@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Let's Get It Wrong</title><link href="style.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.75.0" name="generator" /><link rel="home" href="index.html" title="Advanced Programming Concepts using Haskell" /><link rel="up" href="index.html" title="Advanced Programming Concepts using Haskell" /><link rel="prev" href="ar01s06s02.html" title="DeMorgan's Laws" /><link rel="next" href="ar01s08.html" title="Take n" /></head><body><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Let's Get It Wrong</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s06s02.html">Prev</a> </td><th align="center" width="60%"> </th><td align="right" width="20%"> <a accesskey="n" href="ar01s08.html">Next</a></td></tr></table><hr /></div><div class="sect1" title="Let's Get It Wrong"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="LetsGetItWrong" />Let's Get It Wrong</h2></div></div></div><div class="sect2" title="Subtraction Commutes"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10166" />Subtraction Commutes</h3></div></div></div><p>
+      </p><pre class="programlisting">
+subtractionCommutes a b = a - b == b - a</pre><p>
+      Does it?
+      </p><pre class="programlisting">
+Main&gt; ourCheck subtractionCommutes
+Falsifiable, after 1 tests:
+1
+-2</pre><p>
+    </p><p>
+      Subtraction does not commute and we are given a counter-example (a=1, b=-2)
+    </p></div></div><div class="navfooter"><hr /><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s06s02.html">Prev</a> </td><td align="center" width="20%"> </td><td align="right" width="40%"> <a accesskey="n" href="ar01s08.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">DeMorgan's Laws </td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%"> Take n</td></tr></table></div></body></html>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>A. Testing.hs</title><link href="style.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.75.0" name="generator" /><link rel="home" href="index.html" title="Advanced Programming Concepts using Haskell" /><link rel="up" href="index.html" title="Advanced Programming Concepts using Haskell" /><link rel="prev" href="ar01s13s03.html" title="But that's for another day :)" /></head><body><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">A. Testing.hs</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s13s03.html">Prev</a> </td><th align="center" width="60%"> </th><td align="right" width="20%"> </td></tr></table><hr /></div><div class="appendix" title="A. Testing.hs"><div class="titlepage"><div><div><h2 class="title"><a xmlns:saxon="http://icl.com/saxon" id="AppendixA" />A. Testing.hs</h2></div></div></div><p>
+    </p><pre class="programlisting">
+import Test.QuickCheck
+import Data.Char
+import Data.List
+
+ourConfig = defaultConfig {
+  -- we'll override the default of 100, for kicks
+  configMaxTest = 500
+}
+
+-- forall x. x * 1 == x
+multiplicativeIdentity x = x * 1 == x
+
+-- forall a b. a + b == b + a
+additionCommutes a b = a + b == b + a
+
+ourCheck :: (Testable a) =&gt; a -&gt; IO ()
+ourCheck = check ourConfig
+
+-- DeMorgan's Law (1)
+demorgan1 p q = not (p &amp;&amp; q) == ((not p) || (not q))
+
+-- DeMorgan's Law (2)
+demorgan2 p q = not (p || q) == ((not p) &amp;&amp; (not q))
+
+-- fails (subtraction is not commutative)
+subtractionCommutes a b = a - b == b - a
+
+-- fails
+testTake :: String -&gt; Bool
+testTake s = length (take 5 s) == 5
+-- fixed
+testTake' :: String -&gt; Bool
+testTake' s = length (take 5 s) &lt;= 5
+
+-- division by zero
+divisionInverse a b = (a `div` b) * b + (a `mod` b) == a
+-- fixed
+divisionInverse' a b = b /= 0 ==&gt; (a `div` b) * b + (a `mod` b) == a
+
+-- TDD
+f :: [a] -&gt; [a]
+f = undefined
+
+-- this is a tad perverse
+property1 :: Bool
+property1 = f "" == ""
+
+property2 :: Int -&gt; Bool
+property2 x = f [x] == [x]
+
+property3 :: [Int] -&gt; [Int] -&gt; Bool
+property3 x y = f (x ++ y) == f y ++ f x
+
+-- once-inhabited
+g :: (a -&gt; b) -&gt; (b -&gt; c) -&gt; (a -&gt; c)
+g = undefined
+
+instance Show (a -&gt; b) where
+  show _ = "&lt;&lt;function&gt;&gt;"
+
+-- mocking (generating functions)
+testMap :: (Bool -&gt; String) -&gt; (Int -&gt; Bool) -&gt; [Int] -&gt; Bool
+testMap f g x = map (f . g) x == map f (map g x)
+
+-- create your own Arbitrary
+
+data Person = P {
+  age :: Int,
+  firstName :: String,
+  surname :: String,
+  gender :: Char
+} deriving Show
+
+sumAges :: [Person] -&gt; Int
+sumAges = sum . map age
+
+-- for any list of Person (ps) subtracting their ages from (sumAges ps) equals zero
+testSumAges ps = foldl' (-) (sumAges ps) (age `map` ps) == 0
+
+instance Arbitrary Char where
+    arbitrary = choose ('\32', '\128')
+    coarbitrary c = variant (ord c `rem` 4)
+
+-- (&gt;&gt;=) :: Gen a -&gt; (a -&gt; Gen b) -&gt; Gen b
+-- return :: a -&gt; Gen a
+
+arbGender :: Gen Char
+arbGender = arbitrary &gt;&gt;= \b -&gt; return (if b then 'f' else 'm')
+
+instance Arbitrary Person where
+  arbitrary = arbitrary &gt;&gt;= \a -&gt;
+              arbitrary &gt;&gt;= \f -&gt;
+              arbitrary &gt;&gt;= \s -&gt;
+              arbGender &gt;&gt;= \g -&gt;
+              return (P a f s g)
+
+{-
+  arbitrary = do a &lt;- arbitrary
+                 f &lt;- arbitrary
+                 s &lt;- arbitrary
+                 g &lt;- arbGender
+                 return (P a f s g)
+-}
+
+  -- todo We won't have time to discuss this function.
+  -- It is used for generating functions (where Person appears in the argument list).
+  coarbitrary = undefined</pre><p>
+  </p></div><div class="navfooter"><hr /><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s13s03.html">Prev</a> </td><td align="center" width="20%"> </td><td align="right" width="40%"> </td></tr><tr><td valign="top" align="left" width="40%">But that's for another day :) </td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%"> </td></tr></table></div></body></html>

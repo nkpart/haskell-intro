@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Advanced Programming Concepts using Haskell</title><link href="style.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.75.0" name="generator" /><meta name="description" content="This article is intended as a presentation for an introduction to advanced programming concepts using Haskell. This presentation introduces automated specification-based testing. This presentation is hands-on and requires each member of the audience have access to a computer running the Glasgow Haskell Compiler (GHC) which is available from ." /></head><body><div class="article" title="Advanced Programming Concepts using Haskell"><div class="titlepage"><div><div><h2 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10002" />Advanced Programming Concepts using Haskell</h2></div><div><h3 class="subtitle"><i>An introduction</i></h3></div><div><div class="author"><h3 class="author"><span class="firstname">Tony</span> <span class="surname">Morris</span></h3></div></div><div><p class="copyright">Copyright © 2009 
+      Tony Morris
+    </p></div><div><div class="revhistory"><table summary="Revision history" width="100%" border="1"><tr><th colspan="2" valign="top" align="left"><b>Revision History</b></th></tr><tr><td align="left">Revision 
+        $LastChangedRevision$
+      </td><td align="left">
+        $LastChangedDate$
+      </td></tr><tr><td colspan="2" align="left">
+        Initial authoring
+      </td></tr></table></div></div><div><div class="abstract" title="Abstract"><a xmlns:saxon="http://icl.com/saxon" id="Abstract" /><p class="title"><b>Abstract</b></p><p>
+      This article is intended as a presentation for an introduction to advanced programming concepts using Haskell.
+      This presentation introduces automated specification-based testing.
+    </p><p>
+      This presentation is hands-on and requires each member of the audience have access to a computer running the
+      Glasgow Haskell Compiler (GHC) which is available from <a class="ulink" href="http://haskell.org/ghc" target="_top">http://haskell.org/ghc</a>.
+    </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#Introduction" /></span></dt><dt><span class="sect1"><a href="#GetStarted">Get Started</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N1004E">Are we good to go?</a></span></dt><dt><span class="sect2"><a href="#N1005D">Haskell</a></span></dt><dt><span class="sect2"><a href="#N10076">Pure? Lazy?</a></span></dt><dt><span class="sect2"><a href="#N10092">Automated testing</a></span></dt></dl></dd><dt><span class="sect1"><a href="#Purity">A note on purity</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N100A8">Purity</a></span></dt><dt><span class="sect2"><a href="#N100BB">Improved code</a></span></dt></dl></dd><dt><span class="sect1"><a href="#LetsGo">Let's Go!</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N100E0">Source file</a></span></dt><dt><span class="sect2"><a href="#N100ED">Load the file</a></span></dt></dl></dd><dt><span class="sect1"><a href="#OurFirstProperty">Our First Property</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N10107">Multiplicative Right Identity</a></span></dt><dt><span class="sect2"><a href="#N10121">Let's do it again</a></span></dt></dl></dd><dt><span class="sect1"><a href="#BitMore">And a bit more</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N1013A">Eschew Repetition!</a></span></dt><dt><span class="sect2"><a href="#N10152">DeMorgan's Laws</a></span></dt></dl></dd><dt><span class="sect1"><a href="#LetsGetItWrong">Let's Get It Wrong</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N10166">Subtraction Commutes</a></span></dt></dl></dd><dt><span class="sect1"><a href="#TakeN">Take n</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N1017A">take</a></span></dt><dt><span class="sect2"><a href="#N10193">Take One</a></span></dt><dt><span class="sect2"><a href="#N101A2">Take Two</a></span></dt></dl></dd><dt><span class="sect1"><a href="#Implication">Implication</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N101B4">==&gt;</a></span></dt><dt><span class="sect2"><a href="#N101C7">See a problem?</a></span></dt><dt><span class="sect2"><a href="#N101D6">Fixed!</a></span></dt></dl></dd><dt><span class="sect1"><a href="#TDD">Test Driven Development for clever people</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N101EA">TDD</a></span></dt><dt><span class="sect2"><a href="#N101F9">Now this one</a></span></dt><dt><span class="sect2"><a href="#N10202">And finally</a></span></dt><dt><span class="sect2"><a href="#N1020B">Correctness guarantees</a></span></dt><dt><span class="sect2"><a href="#N10221">Non-total</a></span></dt><dt><span class="sect2"><a href="#N1024E">Now try this one</a></span></dt><dt><span class="sect2"><a href="#N10257">Only one person lives here</a></span></dt></dl></dd><dt><span class="sect1"><a href="#Mocking">Mocking</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N10276">Mocking for clever programmers</a></span></dt><dt><span class="sect2"><a href="#N10286">Let's try it</a></span></dt><dt><span class="sect2"><a href="#N1029D">Really?</a></span></dt></dl></dd><dt><span class="sect1"><a href="#CustomDataType">Custom Data Type</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N102BF">Quantifying over our own type</a></span></dt><dt><span class="sect2"><a href="#N102C8">A function accepting Person</a></span></dt><dt><span class="sect2"><a href="#N102D1">Write a property</a></span></dt><dt><span class="sect2"><a href="#N102E6">Arbitrary Person</a></span></dt><dt><span class="sect2"><a href="#N102F7">Using an existing Arbitrary</a></span></dt><dt><span class="sect2"><a href="#N10309">In fact</a></span></dt><dt><span class="sect2"><a href="#N1031E">In double fact</a></span></dt></dl></dd><dt><span class="sect1"><a href="#WhatPattern">What Pattern?</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N10336">Name?</a></span></dt><dt><span class="sect2"><a href="#N10349">Java?</a></span></dt><dt><span class="sect2"><a href="#N1036C">But that's for another day :)</a></span></dt></dl></dd><dt><span class="appendix"><a href="#AppendixA">A. Testing.hs</a></span></dt></dl></div><div class="sect1"><div class="titlepage" /><p>
+    <span class="emphasis"><em>Sometimes asking #haskell for help can be like taking a drink from a fire hose -- Brent Yorgey</em></span>
+  </p></div><div class="sect1" title="Get Started"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="GetStarted" />Get Started</h2></div></div></div><div class="sect2" title="Are we good to go?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1004E" />Are we good to go?</h3></div></div></div><p>
+      </p><pre class="programlisting">
+$ ghci
+GHCi, version 6.10.2: http://www.haskell.org/ghc/  :? for help
+Prelude&gt; length [Test.QuickCheck.variant]
+1</pre><p>
+    </p><p>
+      Uh oh
+      </p><pre class="programlisting">
+Not in scope: `Test.QuickCheck.variant'</pre><p>
+    </p></div><div class="sect2" title="Haskell"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1005D" />Haskell</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Haskell is a <span class="emphasis"><em>purely-functional, lazy-by-default, statically-typed, type-inferred</em></span> programming language
+          </p></li><li class="listitem"><p>
+            In contrast, Scala is an <span class="emphasis"><em>impure, strict-by-default, statically-typed, (somewhat) type-inferred, (somewhat) functional</em></span> programming language
+          </p></li><li class="listitem"><p>
+            Java (C, C++, C#, Python, Ruby, Groovy, etc.) is an <span class="emphasis"><em>impure, strict-by-force, (somewhat — ok not really) statically-typed, (emphatically) imperative</em></span> programming language
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Pure? Lazy?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10076" />Pure? Lazy?</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          In a purely-functional language, each function may produce results by using only its arguments
+        </p></li><li class="listitem"><p>
+          To access files, network or print, each function must denote this in the type (IO)
+        </p></li><li class="listitem"><p>
+          The function <code class="code">length :: [a] -&gt; Int</code> acts only on the given list to produce an integer value
+        </p></li><li class="listitem"><p>
+          The function <code class="code">readFile :: FilePath -&gt; IO String</code> acts on the given file-path, I/O and produces a string
+        </p></li><li class="listitem"><p>
+          Function arguments are evaluated as they are needed <span class="emphasis"><em>call-by-need</em></span>
+        </p></li></ul></div></div><div class="sect2" title="Automated testing"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10092" />Automated testing</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          Manual testing: JUnit, NUnit, TestNG — poor coverage, clumsy, laborious, error-prone
+        </p></li><li class="listitem"><p>
+          Automated testing: <span class="bold"><strong>QuickCheck</strong></span>, ScalaCheck, Functional Java, FsCheck
+        </p></li><li class="listitem"><p>
+          Automated testing: Correctness verification for smart people
+        </p></li></ul></div></div></div><div class="sect1" title="A note on purity"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="Purity" />A note on purity</h2></div></div></div><div class="sect2" title="Purity"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N100A8" />Purity</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Leads to composition and abstraction
+          </p></li><li class="listitem"><p>
+            Has other far reaching implications that we will only allude to today
+          </p></li></ul></div><p>
+    </p><p>
+      See a problem?
+      </p><pre class="programlisting">
+if(itRocks) println("boo") else println("bar")</pre><p>
+    </p></div><div class="sect2" title="Improved code"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N100BB" />Improved code</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            </p><pre class="programlisting">
+println(if(itRocks) "boo" else "bar")</pre><p>
+          </p></li><li class="listitem"><p>
+            We have a pure expression <code class="code">if(itRocks) "boo" else "bar"</code> wrapped in a <span class="emphasis"><em>side-effect</em></span> <code class="code">println</code>
+          </p></li><li class="listitem"><p>
+            This is preferable to intertwining pure expression and side-effect as we had earlier
+          </p></li><li class="listitem"><p>
+            This approach is what allows us to achieve high reusability and composition and automate testing!
+          </p></li></ul></div><p>
+    </p></div></div><div class="sect1" title="Let's Go!"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="LetsGo" />Let's Go!</h2></div></div></div><div class="sect2" title="Source file"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N100E0" />Source file</h3></div></div></div><p>
+      Open a text editor to a file called <code class="code">Testing.hs</code> and enter
+      </p><pre class="programlisting">
+import Test.QuickCheck
+import Data.Char
+import Data.List
+
+ourConfig = defaultConfig {
+  -- we'll override the default of 100, for kicks
+  configMaxTest = 500
+}</pre><p>
+    </p></div><div class="sect2" title="Load the file"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N100ED" />Load the file</h3></div></div></div><p>
+      At <code class="code">ghci</code> load the file:
+      </p><pre class="programlisting">
+Prelude&gt; :load ./Testing.hs
+[1 of 1] Compiling Main             ( Testing.hs, interpreted )
+Ok, modules loaded: Main.</pre><p>
+    </p><p>
+      Is <code class="code">True</code> true?
+      </p><pre class="programlisting">
+Main&gt; check ourConfig True
+OK, passed 500 tests.</pre><p>
+    </p></div></div><div class="sect1" title="Our First Property"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="OurFirstProperty" />Our First Property</h2></div></div></div><div class="sect2" title="Multiplicative Right Identity"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10107" />Multiplicative Right Identity</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Suppose we write a function called <code class="code">*</code> which multiplies two numbers
+          </p></li><li class="listitem"><p>
+            For all possible values of x, then x * 1 == x
+          </p></li></ul></div><p>
+    </p><p>
+      Add to our source file
+      </p><pre class="programlisting">
+multiplicativeIdentity x = x * 1 == x</pre><p>
+      Then reload and run 500 tests
+      </p><pre class="programlisting">
+Main&gt; :reload
+Ok, modules loaded: Main.
+*Main&gt; check ourConfig multiplicativeIdentity
+OK, passed 500 tests.</pre><p>
+    </p></div><div class="sect2" title="Let's do it again"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10121" />Let's do it again</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            For all possible values of a and b, then a + b == b + a
+          </p></li></ul></div><p>
+    </p><p>
+      Add to our source file
+      </p><pre class="programlisting">
+additionCommutes a b = a + b == b + a</pre><p>
+      Then reload and run 500 tests
+      </p><pre class="programlisting">
+Main&gt; :reload
+Ok, modules loaded: Main.
+*Main&gt; check ourConfig additionCommutes
+OK, passed 500 tests.</pre><p>      
+    </p></div></div><div class="sect1" title="And a bit more"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="BitMore" />And a bit more</h2></div></div></div><div class="sect2" title="Eschew Repetition!"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1013A" />Eschew Repetition!</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            We are repeating <code class="code">check ourConfig</code> 
+          </p></li></ul></div><p>
+    </p><p>
+      </p><pre class="programlisting">
+ourCheck :: (Testable a) =&gt; a -&gt; IO ()
+ourCheck = check ourConfig</pre><p>
+    </p><p>
+      Reload and run tests using <code class="code">ourCheck</code>
+    </p></div><div class="sect2" title="DeMorgan's Laws"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10152" />DeMorgan's Laws</h3></div></div></div><p>
+      </p><pre class="programlisting">
+demorgan1 p q = not (p &amp;&amp; q) == ((not p) || (not q))
+demorgan2 p q = not (p || q) == ((not p) &amp;&amp; (not q))</pre><p>
+    </p><p>
+      </p><pre class="programlisting">
+Main&gt; ourCheck `mapM_` [demorgan1, demorgan2]
+OK, passed 500 tests.
+OK, passed 500 tests.</pre><p>
+    </p></div></div><div class="sect1" title="Let's Get It Wrong"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="LetsGetItWrong" />Let's Get It Wrong</h2></div></div></div><div class="sect2" title="Subtraction Commutes"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10166" />Subtraction Commutes</h3></div></div></div><p>
+      </p><pre class="programlisting">
+subtractionCommutes a b = a - b == b - a</pre><p>
+      Does it?
+      </p><pre class="programlisting">
+Main&gt; ourCheck subtractionCommutes
+Falsifiable, after 1 tests:
+1
+-2</pre><p>
+    </p><p>
+      Subtraction does not commute and we are given a counter-example (a=1, b=-2)
+    </p></div></div><div class="sect1" title="Take n"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="TakeN" />Take n</h2></div></div></div><div class="sect2" title="take"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1017A" />take</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            <code class="code">take</code> is a function that accepts an integer value and a list and returns a list
+          </p></li><li class="listitem"><p>
+            <code class="code">take :: Int -&gt; [a] -&gt; [a]</code>
+          </p></li><li class="listitem"><p>
+            Experiment with the <code class="code">take</code> function
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Take One"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10193" />Take One</h3></div></div></div><p>
+      See a problem?
+      </p><pre class="programlisting">
+testTake :: String -&gt; Bool
+testTake s = length (take 5 s) == 5</pre><p>
+    </p><p>
+      </p><pre class="programlisting">
+Main&gt; ourCheck testTake
+Falsifiable, after 0 tests:
+""</pre><p>
+    </p></div><div class="sect2" title="Take Two"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101A2" />Take Two</h3></div></div></div><p>
+      </p><pre class="programlisting">
+testTake' :: String -&gt; Bool
+testTake' s = length (take 5 s) &lt;= 5</pre><p>
+      Better!
+      </p><pre class="programlisting">
+Main&gt; ourCheck testTake'
+OK, passed 500 tests.</pre><p>
+    </p></div></div><div class="sect1" title="Implication"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="Implication" />Implication</h2></div></div></div><div class="sect2" title="==&gt;"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101B4" />==&gt;</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Sometimes there are values we do not wish to use in the test
+          </p></li><li class="listitem"><p>
+            If there are too many of those values, we may be best to use a different type
+          </p></li><li class="listitem"><p>
+            However, if there are only a few of those values, we can use the <code class="code">==&gt;</code> function
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="See a problem?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101C7" />See a problem?</h3></div></div></div><p>
+      </p><pre class="programlisting">
+divisionInverse a b = (a `div` b) * b + (a `mod` b) == a</pre><p>
+    </p><p>
+      </p><pre class="programlisting">
+Main&gt; ourCheck divisionInverse
+*** Exception: divide by zero</pre><p>
+    </p></div><div class="sect2" title="Fixed!"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101D6" />Fixed!</h3></div></div></div><p>
+      </p><pre class="programlisting">
+divisionInverse' a b = b /= 0 ==&gt; (a `div` b) * b + (a `mod` b) == a</pre><p>
+    </p><p>
+      </p><pre class="programlisting">
+Main&gt; ourCheck divisionInverse'
+OK, passed 500 tests.</pre><p>
+    </p></div></div><div class="sect1" title="Test Driven Development for clever people"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="TDD" />Test Driven Development for clever people</h2></div></div></div><div class="sect2" title="TDD"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101EA" />TDD</h3></div></div></div><p>
+      Suppose
+      </p><pre class="programlisting">
+f :: [a] -&gt; [a]
+f = undefined</pre><p>
+    </p><p>
+      Now make the following property pass
+      </p><pre class="programlisting">
+property1 = f "" == ""</pre><p>
+    </p></div><div class="sect2" title="Now this one"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N101F9" />Now this one</h3></div></div></div><p>
+      Make this one pass as well
+      </p><pre class="programlisting">
+property2 x = f [x] == [x]</pre><p>
+    </p></div><div class="sect2" title="And finally"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10202" />And finally</h3></div></div></div><p>
+      Make this one pass
+      </p><pre class="programlisting">
+property3 x y = f (x ++ y) == f y ++ f x</pre><p>
+    </p></div><div class="sect2" title="Correctness guarantees"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1020B" />Correctness guarantees</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            If your tests always pass, then your function should be reversing the given list <span class="emphasis"><em>guaranteed</em></span>
+          </p></li><li class="listitem"><p>
+            All your functions are <span class="emphasis"><em>extensionally equivalent</em></span>
+          </p></li><li class="listitem"><p>
+            Unfortunately we cannot get exhaustive testing for the general program (equivalent to solving Turing Halting Problem)
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Non-total"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10221" />Non-total</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Haskell is practical for general purpose programming — non-total like most languages you have probably encountered
+          </p></li><li class="listitem"><p>
+            Observe that we have <span class="emphasis"><em>tests as documentation</em></span> — there is nothing more we can write! These are the unambiguous and only essential elements of the <code class="code">reverse</code> function
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><p>
+                  <code class="code">f :: [a] -&gt; [a]</code>
+                </p></li><li class="listitem"><p>
+                  <code class="code">f [] = []</code>
+                </p></li><li class="listitem"><p>
+                  <code class="code">forall x. f [x] = [x]</code>
+                </p></li><li class="listitem"><p>
+                  <code class="code">forall x y. f (x ++ y) = f y ++ f x</code>
+                </p></li></ul></div><p>
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Now try this one"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1024E" />Now try this one</h3></div></div></div><p>
+      </p><pre class="programlisting">
+g :: (a -&gt; b) -&gt; (b -&gt; c) -&gt; (a -&gt; c)
+g = undefined</pre><p>
+    </p></div><div class="sect2" title="Only one person lives here"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10257" />Only one person lives here</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            If your implementation guarantees termination and does not throw an exception, then you all have the same function
+          </p></li><li class="listitem"><p>
+            It is <span class="bold"><strong>impossible</strong></span> to write tests for this function since they would be redundant, due to the static guarantees given by the type system!
+          </p></li><li class="listitem"><p>
+            The given type signature is called <span class="emphasis"><em>once-inhabited</em></span> since there is only one inhabitant, its only implementation
+          </p></li><li class="listitem"><p>
+            Aim for static guarantees first, concede to automated testing second — clumsy manual testing under (very) exceptional circumstances, weak typing under even more exceptional circumstances
+          </p></li></ul></div><p>
+    </p></div></div><div class="sect1" title="Mocking"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="Mocking" />Mocking</h2></div></div></div><div class="sect2" title="Mocking for clever programmers"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10276" />Mocking for clever programmers</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Automated generation of <span class="quote">“<span class="quote">interface</span>”</span> implementations
+          </p></li><li class="listitem"><p>
+            Mocking is essentially quantifying over functions e.g. for any function f then p holds
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Let's try it"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10286" />Let's try it</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            <code class="code">map</code> is a function that applies a function to each element of a list to produce a new list 
+          </p></li><li class="listitem"><p>
+            </p><pre class="programlisting">
+Main&gt; :type map
+map :: (a -&gt; b) -&gt; [a] -&gt; [b]</pre><p>
+          </p></li><li class="listitem"><p>
+            For any two functions (f and g) then map with a function that applies g then f to each element is equivalent to map each element with g then map each element of the result with f
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Really?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1029D" />Really?</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            </p><pre class="programlisting">
+testMap :: (Bool -&gt; String) -&gt; (Int -&gt; Bool) -&gt; [Int] -&gt; Bool
+testMap f g x = map (f . g) x == map f (map g x)</pre><p>
+          </p></li><li class="listitem"><p>
+            <sup>[<a href="#ftn.N102AD" id="N102AD" class="footnote">1</a>]</sup>
+            </p><pre class="programlisting">
+Main&gt; ourCheck testMap
+OK, passed 500 tests.</pre><p>
+          </p></li></ul></div><p>
+    </p></div></div><div class="sect1" title="Custom Data Type"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="CustomDataType" />Custom Data Type</h2></div></div></div><div class="sect2" title="Quantifying over our own type"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N102BF" />Quantifying over our own type</h3></div></div></div><p>
+      Suppose we have our own data type such as
+      </p><pre class="programlisting">
+data Person = P {
+  age :: Int,
+  firstName :: String,
+  surname :: String,
+  gender :: Char
+} deriving Show</pre><p>
+    </p></div><div class="sect2" title="A function accepting Person"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N102C8" />A function accepting Person</h3></div></div></div><p>
+      Let's sum the ages of the people
+      </p><pre class="programlisting">
+sumAges :: [Person] -&gt; Int
+sumAges = sum . map age</pre><p>
+    </p></div><div class="sect2" title="Write a property"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N102D1" />Write a property</h3></div></div></div><p>
+      For any list of <code class="code">Person</code> (ps) subtracting their ages from (<code class="code">sumAges ps</code>) equals zero
+      </p><pre class="programlisting">
+testSumAges ps = foldl' (-) (sumAges ps) (age `map` ps) == 0</pre><p>
+    </p><p>
+      Oh?
+      </p><pre class="programlisting">
+Main&gt; ourCheck testSumAges
+  No instance for (Arbitrary Person)</pre><p>
+    </p></div><div class="sect2" title="Arbitrary Person"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N102E6" />Arbitrary Person</h3></div></div></div><p>
+      The type checker is asking for an instance of the <code class="code">Arbitrary</code> type-class for <code class="code">Person</code>
+    </p><p>
+      Introducing some very interesting functions
+      </p><pre class="programlisting">
+(&gt;&gt;=) :: Gen a -&gt; (a -&gt; Gen b) -&gt; Gen b
+return :: t -&gt; Gen t</pre><p>
+    </p></div><div class="sect2" title="Using an existing Arbitrary"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N102F7" />Using an existing Arbitrary</h3></div></div></div><p>
+      We can use the <code class="code">Arbitrary</code> implementation for <code class="code">Bool</code> to create an <code class="code">Arbitrary</code> for a gender of 'm' or 'f'
+      </p><pre class="programlisting">
+arbGender :: Gen Char
+arbGender = arbitrary &gt;&gt;= \b -&gt; return (if b then 'f' else 'm')</pre><p>
+    </p></div><div class="sect2" title="In fact"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10309" />In fact</h3></div></div></div><p>
+      We can use the <code class="code">Arbitrary</code> implementation for the components of <code class="code">Person</code> to create the <code class="code">Arbitrary</code> for <code class="code">Person</code>
+      </p><pre class="programlisting">
+instance Arbitrary Person where
+  arbitrary = arbitrary &gt;&gt;= \a -&gt;
+              arbitrary &gt;&gt;= \f -&gt;
+              arbitrary &gt;&gt;= \s -&gt;
+              arbGender &gt;&gt;= \g -&gt;
+              return (P a f s g)
+  coarbitrary = undefined -- todo another day</pre><p>
+    </p></div><div class="sect2" title="In double fact"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1031E" />In double fact</h3></div></div></div><p>
+      There is special language syntax built-in for this programming pattern<sup>[<a href="#ftn.N10323" id="N10323" class="footnote">2</a>]</sup>
+      </p><pre class="programlisting">
+instance Arbitrary Person where
+  arbitrary = do a &lt;- arbitrary
+                 f &lt;- arbitrary
+                 s &lt;- arbitrary
+                 g &lt;- arbGender
+                 return (P a f s g)
+  coarbitrary = undefined</pre><p>
+    </p></div></div><div class="sect1" title="What Pattern?"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="WhatPattern" />What Pattern?</h2></div></div></div><div class="sect2" title="Name?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10336" />Name?</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Does this pattern have a name?
+          </p></li><li class="listitem"><p>
+            Have I seen it before?
+          </p></li><li class="listitem"><p>
+            I told a lie <code class="code">(&gt;&gt;=) :: m a -&gt; (a -&gt; m b) -&gt; m b</code>
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="Java?"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N10349" />Java?</h3></div></div></div><p>
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            Java has two specific instances of this pattern<sup>[<a href="#ftn.N10352" id="N10352" class="footnote">3</a>]</sup> built right in
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><p>
+                  <code class="code">;</code> keyword (semi-colon) <code class="code">Effect a -&gt; (a -&gt; Effect b) -&gt; Effect b</code>
+                </p></li><li class="listitem"><p>
+                  <code class="code">throws</code> keyword <code class="code">(Either Throwable) a -&gt; (a -&gt; (Either Throwable) b) -&gt; (Either Throwable) b</code>
+                </p></li></ul></div><p>
+          </p></li></ul></div><p>
+    </p></div><div class="sect2" title="But that's for another day :)"><div class="titlepage"><div><div><h3 class="title"><a xmlns:saxon="http://icl.com/saxon" id="N1036C" />But that's for another day :)</h3></div></div></div><p>
+      </p><div class="mediaobject"><img src="resources/haskell-logo.png" /></div><p>      
+    </p></div></div><div class="appendix" title="A. Testing.hs"><h2 class="title" style="clear: both"><a xmlns:saxon="http://icl.com/saxon" id="AppendixA" />A. Testing.hs</h2><p>
+    </p><pre class="programlisting">
+import Test.QuickCheck
+import Data.Char
+import Data.List
+
+ourConfig = defaultConfig {
+  -- we'll override the default of 100, for kicks
+  configMaxTest = 500
+}
+
+-- forall x. x * 1 == x
+multiplicativeIdentity x = x * 1 == x
+
+-- forall a b. a + b == b + a
+additionCommutes a b = a + b == b + a
+
+ourCheck :: (Testable a) =&gt; a -&gt; IO ()
+ourCheck = check ourConfig
+
+-- DeMorgan's Law (1)
+demorgan1 p q = not (p &amp;&amp; q) == ((not p) || (not q))
+
+-- DeMorgan's Law (2)
+demorgan2 p q = not (p || q) == ((not p) &amp;&amp; (not q))
+
+-- fails (subtraction is not commutative)
+subtractionCommutes a b = a - b == b - a
+
+-- fails
+testTake :: String -&gt; Bool
+testTake s = length (take 5 s) == 5
+-- fixed
+testTake' :: String -&gt; Bool
+testTake' s = length (take 5 s) &lt;= 5
+
+-- division by zero
+divisionInverse a b = (a `div` b) * b + (a `mod` b) == a
+-- fixed
+divisionInverse' a b = b /= 0 ==&gt; (a `div` b) * b + (a `mod` b) == a
+
+-- TDD
+f :: [a] -&gt; [a]
+f = undefined
+
+-- this is a tad perverse
+property1 :: Bool
+property1 = f "" == ""
+
+property2 :: Int -&gt; Bool
+property2 x = f [x] == [x]
+
+property3 :: [Int] -&gt; [Int] -&gt; Bool
+property3 x y = f (x ++ y) == f y ++ f x
+
+-- once-inhabited
+g :: (a -&gt; b) -&gt; (b -&gt; c) -&gt; (a -&gt; c)
+g = undefined
+
+instance Show (a -&gt; b) where
+  show _ = "&lt;&lt;function&gt;&gt;"
+
+-- mocking (generating functions)
+testMap :: (Bool -&gt; String) -&gt; (Int -&gt; Bool) -&gt; [Int] -&gt; Bool
+testMap f g x = map (f . g) x == map f (map g x)
+
+-- create your own Arbitrary
+
+data Person = P {
+  age :: Int,
+  firstName :: String,
+  surname :: String,
+  gender :: Char
+} deriving Show
+
+sumAges :: [Person] -&gt; Int
+sumAges = sum . map age
+
+-- for any list of Person (ps) subtracting their ages from (sumAges ps) equals zero
+testSumAges ps = foldl' (-) (sumAges ps) (age `map` ps) == 0
+
+instance Arbitrary Char where
+    arbitrary = choose ('\32', '\128')
+    coarbitrary c = variant (ord c `rem` 4)
+
+-- (&gt;&gt;=) :: Gen a -&gt; (a -&gt; Gen b) -&gt; Gen b
+-- return :: a -&gt; Gen a
+
+arbGender :: Gen Char
+arbGender = arbitrary &gt;&gt;= \b -&gt; return (if b then 'f' else 'm')
+
+instance Arbitrary Person where
+  arbitrary = arbitrary &gt;&gt;= \a -&gt;
+              arbitrary &gt;&gt;= \f -&gt;
+              arbitrary &gt;&gt;= \s -&gt;
+              arbGender &gt;&gt;= \g -&gt;
+              return (P a f s g)
+
+{-
+  arbitrary = do a &lt;- arbitrary
+                 f &lt;- arbitrary
+                 s &lt;- arbitrary
+                 g &lt;- arbGender
+                 return (P a f s g)
+-}
+
+  -- todo We won't have time to discuss this function.
+  -- It is used for generating functions (where Person appears in the argument list).
+  coarbitrary = undefined</pre><p>
+  </p></div><div class="footnotes"><br /><hr align="left" width="100" /><div class="footnote"><p><sup>[<a href="#N102AD" id="ftn.N102AD" class="para">1</a>] </sup>
+                You will also need
+                <pre class="programlisting">
+instance Show (a -&gt; b) where
+  show _ = "&lt;&lt;function&gt;&gt;"</pre>
+              </p></div><div class="footnote"><p><sup>[<a href="#N10323" id="ftn.N10323" class="para">2</a>] </sup>Note that <code class="code">do</code> and <code class="code">&lt;-</code> are keywords</p></div><div class="footnote"><p><sup>[<a href="#N10352" id="ftn.N10352" class="para">3</a>] </sup><code class="code">(&gt;&gt;=) :: m a -&gt; (a -&gt; m b) -&gt; m b</code></p></div></div></div></body></html>

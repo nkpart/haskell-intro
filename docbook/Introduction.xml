@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    $LastChangedRevision$
+    $LastChangedDate$
+-->
+
+<sect1 id="Introduction">
+  <para>
+    <emphasis>Sometimes asking #haskell for help can be like taking a drink from a fire hose -- Brent Yorgey</emphasis>
+  </para>
+</sect1>
